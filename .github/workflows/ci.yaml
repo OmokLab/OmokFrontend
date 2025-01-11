@@ -10,7 +10,7 @@ on:
       - develop
       - feat/*
       - hotfix/*
-      - epic/*
+      - fix/*
       - merge
 jobs:
   build:
