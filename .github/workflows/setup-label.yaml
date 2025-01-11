@@ -1,0 +1,55 @@
+name: Setup Labels
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Default Labels
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const labels = [
+              { name: "Priority: High 🔥", description: '우선순위 높음', color: "F9D0C4" },
+              { name: "Priority: Low 🐢", description: '우선순위 낮음', color: "C2E0C6" },
+              { name: "Priority: Medium :bookmark:", description: '우선순위 보통', color: "FEF2C0" },
+              { name: "Type: Doc :memo:", description: '문서 추가 / 수정', color: "0075ca" },
+              { name: "Type: Bug :bug:", description: '버그', color: "d73a4a" },
+              { name: "Type: Feature :sparkles:", description: '신규 기능', color: "AB5D19" },
+              { name: "Type: Improve UX :arrow_up:", description: 'UX 개선', color: "2CE151" },
+              { name: "Type: Merge :truck:", description: '머지', color: "4A7A8F" },
+              { name: "Type: Refactor :recycle:", description: '리팩토링', color: "027B6B" },
+            ];  
+
+            // 존재하는 모든 레이블 나열
+            const listResponse = await github.rest.issues.listLabelsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            // 나열된 각 레이블에 대해 삭제 요청
+            for (const label of listResponse.data) {
+              await github.rest.issues.deleteLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: label.name,
+              });
+
+              console.log(`Label '${label.name}' deleted.`);
+            }
+
+            // 새로운 레이블 생성
+            for (const label of labels) {
+              const response = await github.rest.issues.createLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: label.name,
+                color: label.color,
+                description: label.description,
+              });
+
+              console.log(`Label ${label.name} processed`, response.status);
+            }
