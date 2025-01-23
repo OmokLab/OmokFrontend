@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
       fullUrl: true,
     },
   },
+  webpack5: true,
+  webpack: (config) => {
+    config.cache = false;
+    return config;
+  },
 };
 
 export default nextConfig;

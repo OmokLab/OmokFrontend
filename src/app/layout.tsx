@@ -1,5 +1,6 @@
 import localFont from 'next/font/local';
 import './globals.css';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 const pretendard = localFont({
   src: '../fonts/PretendardVariable.woff2',
@@ -14,8 +15,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='ko' className={`${pretendard.variable}`}>
-      <body className={`${pretendard.className} min-h-screen`}>{children}</body>
+    <html lang='ko' className={`${pretendard.variable}`} suppressHydrationWarning>
+      <body className={`${pretendard.className} min-h-screen`}>
+        <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
